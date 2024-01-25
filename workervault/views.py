@@ -2,7 +2,7 @@ import json
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
-
+from workervault.models import WorkerVaultModel
 from workervault.serializer import WorkerVaultSerializer
 
 # Create your views here.
@@ -18,3 +18,16 @@ def registerView(request):
             return HttpResponse(json.dumps({"status":"Success"}))
         else:
             return HttpResponse(json.dumps({"status":"Failed"}))
+        
+        
+
+@csrf_exempt
+def loginView(request):
+    if request.method=='POST':
+        recieved_data = json.loads(request.body)
+        print(recieved_data)
+        getEmailId = recieved_data['emailid']
+        getPassword = recieved_data['password']
+        loginData = WorkerVaultModel.objects.filter(Q(emailid__exact = getEmailId) & Q(password__exact = getPassword)).values()
+        loginData = list(loginData)
+        return HttpResponse(json.dumps(loginData))
