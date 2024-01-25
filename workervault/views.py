@@ -15,6 +15,6 @@ def registerView(request):
         print(serializer_check)
         if serializer_check.is_valid():
             serializer_check.save()
-            return HttpResponse(json.dumps({"Success"}))
+            return HttpResponse(json.dumps({"status":"Success"}))
         else:
-            return HttpResponse(json.dumps({"Failed"}))
+            return HttpResponse(json.dumps({"status":"Failed"}))
