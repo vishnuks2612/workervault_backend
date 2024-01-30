@@ -3,8 +3,8 @@ from django.db.models import Q
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
-from workervault.models import WorkerVaultModel
-from workervault.serializer import WorkerVaultSerializer
+from workervault.models import AddNews, WorkerVaultModel
+from workervault.serializer import AddNewsSerializer, WorkerVaultSerializer
 
 # Create your views here.
 
@@ -17,6 +17,20 @@ def registerView(request):
         if serializer_check.is_valid():
             serializer_check.save()
             return HttpResponse(json.dumps({"status":"Success"}))
+        else:
+            return HttpResponse(json.dumps({"status":"Failed"}))
+        
+        
+        
+@csrf_exempt
+def addnewsView(request):
+    if request.method=='POST':
+        recieved_data = json.loads(request.body)
+        serializer_check = AddNewsSerializer(data=recieved_data)
+        print(serializer_check)
+        if serializer_check.is_valid():
+            serializer_check.save()
+            return HttpResponse(json.dumps({"status":"Added"}))
         else:
             return HttpResponse(json.dumps({"status":"Failed"}))
         
@@ -40,5 +54,15 @@ def userView(request):
     if request.method=='POST':
         userList = WorkerVaultModel.objects.all()
         serialize_data = WorkerVaultSerializer(userList, many = True)
+        print(serialize_data)
+        return HttpResponse(json.dumps(serialize_data.data))
+    
+    
+    
+@csrf_exempt
+def viewnearNews(request):
+    if request.method=='POST':
+        news = AddNews.objects.all()
+        serialize_data = AddNewsSerializer(news, many = True)
         print(serialize_data)
         return HttpResponse(json.dumps(serialize_data.data))

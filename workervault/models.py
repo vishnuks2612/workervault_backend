@@ -11,3 +11,19 @@ class WorkerVaultModel(models.Model):
     gender = models.CharField(default = "", max_length = 100)
     location = models.CharField(default = "", max_length = 100)
     password = models.CharField(default = "", max_length = 100)
+    
+    
+    
+class AddNews(models.Model):
+    newsid = models.AutoField(primary_key=True)
+    title = models.CharField(default = "", max_length = 100)
+    description = models.CharField(default = "", max_length = 250)
+    image = models.ImageField(default = "", max_length = 500)
+    location = models.CharField(default = "", max_length = 200)
+    content = models.CharField(default = "", max_length = 500)
+    
+    
+    
+class AdminAdd(models.Model):
+    job_id = models.AutoField(primary_key=True)
+    job_name = models.CharField(default = "", max_length = 100)
