@@ -4,7 +4,7 @@ from django.http import HttpResponse
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 from workervault.models import AddNews, WorkerVaultModel
-from workervault.serializer import AddNewsSerializer, WorkerVaultSerializer
+from workervault.serializer import AddNewsSerializer, AdminAddSerializer, WorkerVaultSerializer
 
 # Create your views here.
 
@@ -34,6 +34,19 @@ def addnewsView(request):
         else:
             return HttpResponse(json.dumps({"status":"Failed"}))
         
+        
+
+@csrf_exempt
+def addservicesView(request):
+    if request.method == 'POST':
+        recieved_data = json.loads(request.body)
+        serializer_check = AdminAddSerializer(data = recieved_data)
+        print(serializer_check)
+        if serializer_check.is_valid():
+            serializer_check.save()
+            return HttpResponse(json.dumps({"status":"Added"}))
+        else:
+            return HttpResponse(json.dumps({"status":"Failed"}))
         
 
 @csrf_exempt

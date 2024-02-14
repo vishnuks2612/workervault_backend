@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from workervault.models import AddNews, WorkerVaultModel
+from workervault.models import AddNews, AdminAdd, WorkerVaultModel
 
 
 class WorkerVaultSerializer(serializers.ModelSerializer):
@@ -28,4 +28,13 @@ class AddNewsSerializer(serializers.ModelSerializer):
             'image',
             'location',
             'content'
+        )
+        
+        
+class AdminAddSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = AdminAdd
+        fields = (
+            'job_id',
+            'job_name'
         )

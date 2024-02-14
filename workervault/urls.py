@@ -5,5 +5,6 @@ urlpatterns = [
     path('login/', views.loginView, name="login"),
     path('userview/', views.userView, name="userview"),
     path('addnews/', views.addnewsView, name="addnews"),
-    path('viewnearnews/', views.viewnearNews, name="viewnearnews"),
+    path('viewnearnews/', views.viewnearNews, name='viewnearnews'),
+    path('addservicesview/', views.addservicesView, name='addservicesview'),
 ]

@@ -18,7 +18,7 @@ class AddNews(models.Model):
     newsid = models.AutoField(primary_key=True)
     title = models.CharField(default = "", max_length = 100)
     description = models.CharField(default = "", max_length = 250)
-    image = models.ImageField(default = "", max_length = 500)
+    image = models.CharField(default = "", max_length = 5000)
     location = models.CharField(default = "", max_length = 200)
     content = models.CharField(default = "", max_length = 500)
     
