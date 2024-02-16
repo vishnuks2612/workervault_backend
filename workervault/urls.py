@@ -7,4 +7,6 @@ urlpatterns = [
     path('addnews/', views.addnewsView, name="addnews"),
     path('viewnearnews/', views.viewnearNews, name='viewnearnews'),
     path('addservicesview/', views.addservicesView, name='addservicesview'),
+    path('viewservicelist/', views.viewservicelistView, name="viewservicelist"),
+    path('contactus/', views.contactUs, name="contactus"),
 ]

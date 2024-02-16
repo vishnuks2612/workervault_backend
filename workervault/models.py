@@ -27,3 +27,10 @@ class AddNews(models.Model):
 class AdminAdd(models.Model):
     job_id = models.AutoField(primary_key=True)
     job_name = models.CharField(default = "", max_length = 100)
+    
+    
+    
+class ContactUs(models.Model):
+    id = models.AutoField(primary_key=True)
+    description = models.CharField(default = "", max_length = 400)
+    emailid = models.ForeignKey(WorkerVaultModel, null = True, on_delete = models.CASCADE)
