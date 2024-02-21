@@ -76,6 +76,8 @@ def loginView(request):
         loginData = WorkerVaultModel.objects.filter(Q(emailid__exact = getEmailId) & Q(password__exact = getPassword)).values()
         loginData = list(loginData)
         return HttpResponse(json.dumps(loginData))
+    else:
+        return HttpResponse(json.dumps("Failed"))
 
 
 
