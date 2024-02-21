@@ -5,6 +5,10 @@ from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 from workervault.models import AddNews, AdminAdd, WorkerVaultModel
 from workervault.serializer import AddNewsSerializer, AdminAddSerializer, ContactUsSerializer, WorkerVaultSerializer
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from .pusher import pusher_client
+
 
 # Create your views here.
 
@@ -103,3 +107,16 @@ def viewservicelistView(request):
         serialize_data = AdminAddSerializer(viewlist, many = True)
         print(serialize_data)
         return HttpResponse(json.dumps(serialize_data.data))
+    
+    
+    
+    
+class MessageAPIView(APIView):
+    
+    def post(self, request):
+        pusher_client.trigger('workervault', 'message', {
+            'name': request.data['name'],
+            'message': request.data['message'],
+        })
+        
+        return Response([])
