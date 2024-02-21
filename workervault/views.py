@@ -113,12 +113,12 @@ def viewservicelistView(request):
     
     
     
-class MessageAPIView(APIView):
+# class MessageAPIView(APIView):
     
-    def post(self, request):
-        pusher_client.trigger('workervault', 'message', {
-            'name': request.data['name'],
-            'message': request.data['message'],
-        })
+#     def post(self, request):
+#         pusher_client.trigger('workervault', 'message', {
+#             'name': request.data['name'],
+#             'message': request.data['message'],
+#         })
         
-        return Response([])
+#         return Response([])
