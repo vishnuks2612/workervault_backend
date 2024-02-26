@@ -3,7 +3,7 @@ from django.db.models import Q
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
-from workervault.models import AddNews, AdminAdd, WorkerVaultModel
+from workervault.models import AddNews, AdminAdd, ContactUs, WorkerVaultModel
 from workervault.serializer import AddNewsSerializer, AdminAddSerializer, ContactUsSerializer, WorkerVaultSerializer
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -52,7 +52,7 @@ def addservicesView(request):
         else:
             return HttpResponse(json.dumps({"status":"Failed"}))
         
-        
+ 
 
 @csrf_exempt
 def contactUs(request):
@@ -100,6 +100,14 @@ def viewnearNews(request):
         print(serialize_data)
         return HttpResponse(json.dumps(serialize_data.data))
     
+    
+@csrf_exempt
+def viewQueries(request):
+    if request.method == 'POST':
+        queries = ContactUs.objects.all()
+        serialize_data = ContactUsSerializer(queries, many = True)
+        print(serialize_data)
+        return HttpResponse(json.dumps(serialize_data.data))    
     
     
 @csrf_exempt

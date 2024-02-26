@@ -9,6 +9,7 @@ class WorkerVaultModel(models.Model):
     emailid = models.EmailField(default = "", max_length = 254)
     address = models.CharField(default = "", max_length = 400)
     gender = models.CharField(default = "", max_length = 100)
+    job = models.CharField(default = "", max_length = 100)
     location = models.CharField(default = "", max_length = 100)
     password = models.CharField(default = "", max_length = 100)
     
@@ -33,4 +34,4 @@ class AdminAdd(models.Model):
 class ContactUs(models.Model):
     id = models.AutoField(primary_key=True)
     description = models.CharField(default = "", max_length = 400)
-    emailid = models.ForeignKey(WorkerVaultModel, null = True, on_delete = models.CASCADE)
+    userid = models.ForeignKey(WorkerVaultModel, null = True, on_delete = models.CASCADE)

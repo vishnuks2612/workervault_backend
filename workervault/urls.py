@@ -1,6 +1,5 @@
 from django.urls import path, include
 from .import views
-from .views import MessageAPIView
 
 
 urlpatterns = [
@@ -12,7 +11,8 @@ urlpatterns = [
     path('addservicesview/', views.addservicesView, name='addservicesview'),
     path('viewservicelist/', views.viewservicelistView, name="viewservicelist"),
     path('contactus/', views.contactUs, name="contactus"),
+    path('viewQueries/', views.viewQueries, name="viewQueries"),
     
     
-    path('messages/', MessageAPIView.as_view())
+    
 ]

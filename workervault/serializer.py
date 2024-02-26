@@ -10,6 +10,7 @@ class WorkerVaultSerializer(serializers.ModelSerializer):
             'name',
             'phoneno',
             'emailid',
+            'job',
             'address',
             'gender',
             'location',
@@ -45,6 +46,6 @@ class ContactUsSerializer(serializers.ModelSerializer):
     class Meta:
         model = ContactUs
         fields = (
-            'emailid',
+            'userid',
             'description'
         )
