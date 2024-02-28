@@ -3,8 +3,8 @@ from django.db.models import Q
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
-from workervault.models import AddNews, AdminAdd, ContactUs, WorkerVaultModel
-from workervault.serializer import AddNewsSerializer, AdminAddSerializer, ContactUsSerializer, WorkerVaultSerializer
+from workervault.models import AddNews, AdminAdd, ContactUs, ServiceSeekersModel, WorkerVaultModel
+from workervault.serializer import AddNewsSerializer, AdminAddSerializer, ContactUsSerializer, ServiceSeekersSerializer, WorkerVaultSerializer
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from .pusher import pusher_client
@@ -23,6 +23,48 @@ def registerView(request):
             return HttpResponse(json.dumps({"status":"Success"}))
         else:
             return HttpResponse(json.dumps({"status":"Failed"}))
+        
+
+@csrf_exempt      
+def seekersJoin(request):
+    if request.method == 'POST':
+        recieved_data = json.loads(request.body)
+        serializer_check = ServiceSeekersSerializer(data = recieved_data)
+        print(serializer_check)
+        if serializer_check.is_valid():
+            serializer_check.save()
+            return HttpResponse(json.dumps({"status":"Added"}))
+        else:
+            return HttpResponse(json.dumps({"status":"Failed"}))
+        
+
+
+
+@csrf_exempt
+def loginView(request):
+    if request.method=='POST':
+        recieved_data = json.loads(request.body)
+        getEmailId = recieved_data['emailid']
+        getPassword = recieved_data['password']
+        loginData = WorkerVaultModel.objects.filter(Q(emailid__exact = getEmailId) & Q(password__exact = getPassword)).values()
+        loginData = list(loginData)
+        return HttpResponse(json.dumps(loginData))
+    else:
+        return HttpResponse(json.dumps("Failed"))
+    
+    
+
+@csrf_exempt
+def seekersLogin(request):
+    if request.method == 'POST':
+        recieved_data = json.loads(request.body)
+        getEmail = recieved_data['email']
+        getPassword = recieved_data['password']
+        loginData = ServiceSeekersModel.objects.filter(Q(email__exact = getEmail) & Q(password__exact = getPassword)).values()
+        loginData = list(loginData)
+        return HttpResponse(json.dumps(loginData))
+    else:
+        return HttpResponse(json.dumps('Failed'))
         
         
         
@@ -67,19 +109,6 @@ def contactUs(request):
             return HttpResponse(json.dumps({"status":"Failed"}))
         
 
-@csrf_exempt
-def loginView(request):
-    if request.method=='POST':
-        recieved_data = json.loads(request.body)
-        getEmailId = recieved_data['emailid']
-        getPassword = recieved_data['password']
-        loginData = WorkerVaultModel.objects.filter(Q(emailid__exact = getEmailId) & Q(password__exact = getPassword)).values()
-        loginData = list(loginData)
-        return HttpResponse(json.dumps(loginData))
-    else:
-        return HttpResponse(json.dumps("Failed"))
-
-
 
 
 @csrf_exempt
@@ -117,6 +146,18 @@ def viewservicelistView(request):
         serialize_data = AdminAddSerializer(viewlist, many = True)
         print(serialize_data)
         return HttpResponse(json.dumps(serialize_data.data))
+    
+    
+    
+    
+@csrf_exempt
+def findWorkers(request):
+    if request.method == "POST":
+        recieved_data = json.loads(request.body)
+        getWorker = recieved_data["job"]
+        data = WorkerVaultModel.objects.filter(Q(job__icontains=getWorker)).all()
+        serializer_data = WorkerVaultSerializer(data, many = True)
+        return HttpResponse(json.dumps(serializer_data.data))
     
     
     

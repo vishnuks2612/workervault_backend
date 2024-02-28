@@ -12,7 +12,15 @@ class WorkerVaultModel(models.Model):
     job = models.CharField(default = "", max_length = 100)
     location = models.CharField(default = "", max_length = 100)
     password = models.CharField(default = "", max_length = 100)
-    
+
+
+
+class ServiceSeekersModel(models.Model):
+    seekersid = models.AutoField(primary_key=True)
+    name = models.CharField(default = "", max_length = 100)
+    phone = models.BigIntegerField(null = True)
+    email = models.EmailField(default = "", max_length = 254)
+    password = models.CharField(default = "", max_length = 100)
     
     
 class AddNews(models.Model):
