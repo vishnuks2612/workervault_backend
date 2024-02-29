@@ -3,8 +3,8 @@ from django.db.models import Q
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
-from workervault.models import AddNews, AdminAdd, ContactUs, ServiceSeekersModel, WorkerVaultModel
-from workervault.serializer import AddNewsSerializer, AdminAddSerializer, ContactUsSerializer, ServiceSeekersSerializer, WorkerVaultSerializer
+from workervault.models import AddNews, AdminAdd, ContactUs, WorkerVaultModel
+from workervault.serializer import AddNewsSerializer, AdminAddSerializer, ContactUsSerializer, WorkerVaultSerializer
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from .pusher import pusher_client
@@ -25,19 +25,6 @@ def registerView(request):
             return HttpResponse(json.dumps({"status":"Failed"}))
         
 
-@csrf_exempt      
-def seekersJoin(request):
-    if request.method == 'POST':
-        recieved_data = json.loads(request.body)
-        serializer_check = ServiceSeekersSerializer(data = recieved_data)
-        print(serializer_check)
-        if serializer_check.is_valid():
-            serializer_check.save()
-            return HttpResponse(json.dumps({"status":"Added"}))
-        else:
-            return HttpResponse(json.dumps({"status":"Failed"}))
-        
-
 
 
 @csrf_exempt
@@ -54,19 +41,7 @@ def loginView(request):
     
     
 
-@csrf_exempt
-def seekersLogin(request):
-    if request.method == 'POST':
-        recieved_data = json.loads(request.body)
-        getEmail = recieved_data['email']
-        getPassword = recieved_data['password']
-        loginData = ServiceSeekersModel.objects.filter(Q(email__exact = getEmail) & Q(password__exact = getPassword)).values()
-        loginData = list(loginData)
-        return HttpResponse(json.dumps(loginData))
-    else:
-        return HttpResponse(json.dumps('Failed'))
-        
-        
+  
         
 @csrf_exempt
 def addnewsView(request):

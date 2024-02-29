@@ -13,8 +13,6 @@ urlpatterns = [
     path('contactus/', views.contactUs, name="contactus"),
     path('viewQueries/', views.viewQueries, name="viewQueries"),
     path('findWorkers/', views.findWorkers, name="findWorkers"),
-    path('seekersJoin/', views.seekersJoin, name='seekersJoin'),
-    path('seekersLogin/', views.seekersLogin, name="seekersLogin"),
     
     
     

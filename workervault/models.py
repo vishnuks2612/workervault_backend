@@ -9,18 +9,12 @@ class WorkerVaultModel(models.Model):
     emailid = models.EmailField(default = "", max_length = 254)
     address = models.CharField(default = "", max_length = 400)
     gender = models.CharField(default = "", max_length = 100)
+    role = models.CharField(default = "", max_length = 100)
     job = models.CharField(default = "", max_length = 100)
     location = models.CharField(default = "", max_length = 100)
     password = models.CharField(default = "", max_length = 100)
 
 
-
-class ServiceSeekersModel(models.Model):
-    seekersid = models.AutoField(primary_key=True)
-    name = models.CharField(default = "", max_length = 100)
-    phone = models.BigIntegerField(null = True)
-    email = models.EmailField(default = "", max_length = 254)
-    password = models.CharField(default = "", max_length = 100)
     
     
 class AddNews(models.Model):
@@ -43,3 +37,14 @@ class ContactUs(models.Model):
     id = models.AutoField(primary_key=True)
     description = models.CharField(default = "", max_length = 400)
     userid = models.ForeignKey(WorkerVaultModel, null = True, on_delete = models.CASCADE)
+    
+    
+
+class chat(models.Model):
+    description = models.TextField()
+    name = models.ForeignKey(WorkerVaultModel, on_delete = models.CASCADE, related_name = 'sender')
+    time = models.TimeField(auto_now_add = True)
+    seen = models.BooleanField(default = False)
+    timestamp = models.DateTimeField(auto_now_add = True)
+    
+    
