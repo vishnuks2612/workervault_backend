@@ -13,6 +13,7 @@ urlpatterns = [
     path('contactus/', views.contactUs, name="contactus"),
     path('viewQueries/', views.viewQueries, name="viewQueries"),
     path('findWorkers/', views.findWorkers, name="findWorkers"),
+    path('AddJob/', views.AddJob, name="AddJob"),
     
     
     

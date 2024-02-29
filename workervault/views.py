@@ -137,6 +137,19 @@ def findWorkers(request):
     
     
     
+@csrf_exempt
+def AddJob(request):
+    if request.method == "PUT":      
+        received_data = json.loads(request.body)
+        getUserid = received_data["userid"]
+        getJob = received_data["job"]
+        data = WorkerVaultModel.objects.filter(Q(userid__exact=getUserid))
+        data.update(job=getJob)
+        return HttpResponse(json.dumps({"status":"Job Added"}))
+    
+    
+    
+    
 # class MessageAPIView(APIView):
     
 #     def post(self, request):
