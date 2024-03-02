@@ -14,6 +14,7 @@ urlpatterns = [
     path('viewQueries/', views.viewQueries, name="viewQueries"),
     path('findWorkers/', views.findWorkers, name="findWorkers"),
     path('AddJob/', views.AddJob, name="AddJob"),
+    path('viewUser/', views.user_chat_view, name="viewUser"),
     
     
     

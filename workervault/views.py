@@ -4,7 +4,7 @@ from django.http import HttpResponse
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 from workervault.models import AddNews, AdminAdd, ContactUs, WorkerVaultModel
-from workervault.serializer import AddNewsSerializer, AdminAddSerializer, ContactUsSerializer, WorkerVaultSerializer
+from workervault.serializer import *
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from .pusher import pusher_client
@@ -147,7 +147,17 @@ def AddJob(request):
         data.update(job=getJob)
         return HttpResponse(json.dumps({"status":"Job Added"}))
     
-    
+@csrf_exempt
+def user_chat_view(request):
+    if request.method=='POST':
+        recieved_data = json.loads(request.body)
+        serializer_check = MessagesSerializer(data=recieved_data)
+        print(serializer_check)
+        if serializer_check.is_valid():
+            serializer_check.save()
+            return HttpResponse(json.dumps({"status":"Added"}))
+        else:
+            return HttpResponse(json.dumps({"status":"Failed"}))
     
     
 # class MessageAPIView(APIView):

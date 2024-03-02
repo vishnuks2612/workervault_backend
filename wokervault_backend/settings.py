@@ -81,16 +81,23 @@ WSGI_APPLICATION = 'wokervault_backend.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'djongo',
-        "CLIENT": {
-            "name": "workervault",
-            "host": "mongodb+srv://vishnuks2612:Vishnu123@cluster0.mjm2uju.mongodb.net/?retryWrites=true&w=majority",
-            "username": "vishnuks2612",
-            "password": "Vishnu123",
-            "authMechanism": "SCRAM-SHA-1",
-        },
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'djongo',
+#         "CLIENT": {
+#             "name": "workervault",
+#             "host": "mongodb+srv://vishnuks2612:Vishnu123@cluster0.mjm2uju.mongodb.net/?retryWrites=true&w=majority",
+#             "username": "vishnuks2612",
+#             "password": "Vishnu123",
+#             "authMechanism": "SCRAM-SHA-1",
+#         },
+#     }
+# }
 
 
 # Password validation

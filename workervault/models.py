@@ -40,9 +40,11 @@ class ContactUs(models.Model):
     
     
 
-class chat(models.Model):
+class MessageModel(models.Model):
+    message_id=models.AutoField(primary_key=True)
     description = models.TextField()
     name = models.ForeignKey(WorkerVaultModel, on_delete = models.CASCADE, related_name = 'sender')
+    reciever_name = models.ForeignKey(WorkerVaultModel, on_delete = models.CASCADE, related_name = 'reciever')
     time = models.TimeField(auto_now_add = True)
     seen = models.BooleanField(default = False)
     timestamp = models.DateTimeField(auto_now_add = True)
