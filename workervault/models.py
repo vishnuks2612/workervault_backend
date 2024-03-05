@@ -36,7 +36,7 @@ class AdminAdd(models.Model):
 class ContactUs(models.Model):
     id = models.AutoField(primary_key=True)
     description = models.CharField(default = "", max_length = 400)
-    userid = models.ForeignKey(WorkerVaultModel, null = True, on_delete = models.CASCADE)
+    userid = models.ForeignKey(WorkerVaultModel, on_delete = models.CASCADE)
     
     
 
@@ -53,3 +53,10 @@ class MessageModel(models.Model):
 class Admin(models.Model):
     username = models.CharField(default = " ", max_length = 50)
     password = models.CharField(default = "", max_length = 50)
+    
+    
+class FeedbackModel(models.Model):
+    id = models.AutoField(primary_key=True)
+    feedback = models.CharField(default = " ", max_length = 100)
+    sender_name = models.ForeignKey(WorkerVaultModel, on_delete = models.CASCADE, related_name = 'sender_name' )
+    reciever_name = models.ForeignKey(WorkerVaultModel, on_delete = models.CASCADE, related_name = 'reciever_name')

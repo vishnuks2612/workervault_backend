@@ -18,6 +18,11 @@ urlpatterns = [
     path('viewChat/', views.view_user_chat_view, name="viewChat"),
     # path('recievedChat/', views.recieved_chat_view, name="recievedChat"),
     path('adminLogin/', views.adminLogin, name="adminLogin"),
+    path('viewProfile/', views.view_profile_view, name="viewProfile"),
+    path('EditProfile/', views.EditProfile, name="EditProfile"),
+    path('savefeedback/', views.feedback, name="savefeedback"),
+    path('viewFeedback/', views.viewFeedback, name="viewFeedback"),
+    path('deleteView/', views.deleteView, name="deleteView"),
     
     
     

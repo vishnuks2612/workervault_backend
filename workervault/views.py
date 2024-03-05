@@ -88,6 +88,7 @@ def addservicesView(request):
 def contactUs(request):
     if request.method == 'POST':
         recieved_data = json.loads(request.body)
+        print(recieved_data)
         serializer_check = ContactUsSerializer(data = recieved_data)
         print(serializer_check)
         if serializer_check.is_valid():
@@ -159,6 +160,31 @@ def AddJob(request):
         data = WorkerVaultModel.objects.filter(Q(userid__exact=getUserid))
         data.update(job=getJob)
         return HttpResponse(json.dumps({"status":"Job Added"}))
+ 
+@csrf_exempt
+def view_profile_view(request):
+    if request.method=='POST':
+        received_data = json.loads(request.body)
+        getUserid = received_data["userid"]
+        userList = WorkerVaultModel.objects.filter(Q(userid__exact=getUserid)).all()
+        serialize_data = WorkerVaultSerializer(userList, many = True)
+        return HttpResponse(json.dumps(serialize_data.data))   
+    
+@csrf_exempt
+def EditProfile(request):
+    if request.method == "PUT":
+        recieved_data = json.loads(request.body)
+        getUserid = recieved_data['userid']
+        getName = recieved_data['name']
+        getEmail = recieved_data['emailid']
+        getPhone = recieved_data['phoneno']
+        getJob = recieved_data['job']
+        getAddress = recieved_data['address']
+        getLocation = recieved_data['location']
+        data = WorkerVaultModel.objects.filter(Q(userid__exact = getUserid))
+        data.update(name = getName, emailid = getEmail, phoneno = getPhone, job = getJob, address = getAddress, location = getLocation)
+        return HttpResponse(json.dumps({"status":"Profile Updated"}))
+    
     
 @csrf_exempt
 def user_chat_view(request):
@@ -182,6 +208,52 @@ def view_user_chat_view(request):
         serializer_data = MessagesSerializer(data, many = True)
         return HttpResponse(json.dumps(serializer_data.data))
     
+    
+
+@csrf_exempt
+def feedback(request):
+    if request.method=='POST':
+        recieved_data = json.loads(request.body)
+        serializer_check = FeedbackSerializer(data=recieved_data)
+        print(serializer_check)
+        if serializer_check.is_valid():
+            serializer_check.save()
+            return HttpResponse(json.dumps({"status":"Feedback Added"}))
+        else:
+            return HttpResponse(json.dumps({"status":"Failed"}))
+        
+        
+        
+@csrf_exempt
+def viewFeedback(request):
+    if request.method == 'POST':
+        recieved_data = json.loads(request.body)
+        getRecieverid=recieved_data["reciever_name"]
+        data = FeedbackModel.objects.filter(Q(reciever_name__exact=getRecieverid)).all()
+        serialize_data = FeedbackSerializer(data, many = True)
+        print(serialize_data)
+        return HttpResponse(json.dumps(serialize_data.data))  
+    
+    
+@csrf_exempt
+def deleteView(request):
+    if request.method == "DELETE":
+        recieved_id = request.GET.get('id') 
+        getId = (int(recieved_id))
+        print(getId)
+        if getId is not None:
+            try:
+                data = AdminAdd.objects.filter(Q(job_id__exact=getId)) 
+            except AdminAdd.DoesNotExist:
+                return HttpResponse(json.dumps({"status":"Post not Found"}))  
+            data.delete()
+            return HttpResponse(json.dumps({"status":"Deleted Successfully"}))  
+        
+        
+
+    
+        
+        
 # @csrf_exempt
 # def recieved_chat_view(request):
 #     if request.method=='POST':

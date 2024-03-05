@@ -47,10 +47,7 @@ class AdminAddSerializer(serializers.ModelSerializer):
 class ContactUsSerializer(serializers.ModelSerializer):
     class Meta:
         model = ContactUs
-        fields = (
-            'userid',
-            'description'
-        )
+        fields = '__all__'
         
 class MessagesSerializer(serializers.ModelSerializer):
     user = WorkerVaultSerializer(source='name', read_only=True)
@@ -58,7 +55,14 @@ class MessagesSerializer(serializers.ModelSerializer):
         model = MessageModel
         fields = '__all__'
         
-class AdminSerializer(serializers.Serializer):
+class AdminSerializer(serializers.ModelSerializer):
     class Meta:
         model = Admin
+        fields = '__all__'
+        
+
+class FeedbackSerializer(serializers.ModelSerializer):
+    sender = WorkerVaultSerializer(source='sender_name', read_only=True)
+    class Meta:
+        model = FeedbackModel
         fields = '__all__'
