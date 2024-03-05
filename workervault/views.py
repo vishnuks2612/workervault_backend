@@ -3,7 +3,7 @@ from django.db.models import Q
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
-from workervault.models import AddNews, AdminAdd, ContactUs, WorkerVaultModel
+from workervault.models import *
 from workervault.serializer import *
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -34,6 +34,19 @@ def loginView(request):
         getEmailId = recieved_data['emailid']
         getPassword = recieved_data['password']
         loginData = WorkerVaultModel.objects.filter(Q(emailid__exact = getEmailId) & Q(password__exact = getPassword)).values()
+        loginData = list(loginData)
+        return HttpResponse(json.dumps(loginData))
+    else:
+        return HttpResponse(json.dumps("Failed"))
+    
+    
+@csrf_exempt
+def adminLogin(request):
+    if request.method == 'POST':
+        recieved_data = json.loads(request.body)
+        getUsername = recieved_data['username']
+        getPass = recieved_data['password']
+        loginData = Admin.objects.filter(Q(username__exact = getUsername              ) & Q(password__exact = getPass)).values()
         loginData = list(loginData)
         return HttpResponse(json.dumps(loginData))
     else:
@@ -158,6 +171,27 @@ def user_chat_view(request):
             return HttpResponse(json.dumps({"status":"Added"}))
         else:
             return HttpResponse(json.dumps({"status":"Failed"}))
+        
+@csrf_exempt
+def view_user_chat_view(request):
+    if request.method=='POST':
+        recieved_data = json.loads(request.body)
+        getUserid = recieved_data["name"]
+        getRecieverid=recieved_data["reciever_name"]
+        data = MessageModel.objects.filter(Q(name__exact=getUserid)&Q(reciever_name__exact=getRecieverid)).all()
+        serializer_data = MessagesSerializer(data, many = True)
+        return HttpResponse(json.dumps(serializer_data.data))
+    
+# @csrf_exempt
+# def recieved_chat_view(request):
+#     if request.method=='POST':
+#         recieved_data = json.loads(request.body)
+#         getRecieverid=recieved_data["reciever_name"]
+#         get_sender_id=recieved_data["name"]
+#         data = MessageModel.objects.filter(Q(reciever_name__exact=getRecieverid)&Q(name__exact=get_sender_id)).all()
+#         serializer_data = MessagesSerializer(data, many = True)
+#         return HttpResponse(json.dumps(serializer_data.data))
+    
     
     
 # class MessageAPIView(APIView):

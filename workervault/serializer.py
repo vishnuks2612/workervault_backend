@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from workervault.models import AddNews, AdminAdd, ContactUs,  WorkerVaultModel, MessageModel
+from workervault.models import *
 
 
 class WorkerVaultSerializer(serializers.ModelSerializer):
@@ -53,6 +53,12 @@ class ContactUsSerializer(serializers.ModelSerializer):
         )
         
 class MessagesSerializer(serializers.ModelSerializer):
+    user = WorkerVaultSerializer(source='name', read_only=True)
     class Meta:
         model = MessageModel
+        fields = '__all__'
+        
+class AdminSerializer(serializers.Serializer):
+    class Meta:
+        model = Admin
         fields = '__all__'

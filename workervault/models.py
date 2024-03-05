@@ -49,4 +49,7 @@ class MessageModel(models.Model):
     seen = models.BooleanField(default = False)
     timestamp = models.DateTimeField(auto_now_add = True)
     
-    
+
+class Admin(models.Model):
+    username = models.CharField(default = " ", max_length = 50)
+    password = models.CharField(default = "", max_length = 50)
