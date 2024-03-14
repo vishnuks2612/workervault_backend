@@ -49,10 +49,10 @@ class ContactUsSerializer(serializers.ModelSerializer):
         model = ContactUs
         fields = '__all__'
         
-class MessagesSerializer(serializers.ModelSerializer):
+class ChatSerializer(serializers.ModelSerializer):
     user = WorkerVaultSerializer(source='name', read_only=True)
     class Meta:
-        model = MessageModel
+        model = Chat
         fields = '__all__'
         
 class AdminSerializer(serializers.ModelSerializer):

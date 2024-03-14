@@ -39,16 +39,13 @@ class ContactUs(models.Model):
     userid = models.ForeignKey(WorkerVaultModel, on_delete = models.CASCADE)
     
     
-
-class MessageModel(models.Model):
-    message_id=models.AutoField(primary_key=True)
-    description = models.TextField()
-    name = models.ForeignKey(WorkerVaultModel, on_delete = models.CASCADE, related_name = 'sender')
-    reciever_name = models.ForeignKey(WorkerVaultModel, on_delete = models.CASCADE, related_name = 'reciever')
-    time = models.TimeField(auto_now_add = True)
-    seen = models.BooleanField(default = False)
-    timestamp = models.DateTimeField(auto_now_add = True)
-    
+class Chat(models.Model):
+    sender = models.IntegerField()
+    receiver = models.IntegerField()
+    job_id=models.IntegerField()
+    text = models.TextField()
+    file = models.FileField(upload_to='chat_files/', null=True, blank=True)
+    timestamp = models.DateTimeField(auto_now_add=True)
 
 class Admin(models.Model):
     username = models.CharField(default = " ", max_length = 50)

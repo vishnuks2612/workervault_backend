@@ -1,6 +1,6 @@
 import json
 from django.db.models import Q
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 from workervault.models import *
@@ -8,6 +8,7 @@ from workervault.serializer import *
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from .pusher import pusher_client
+from rest_framework.decorators import api_view
 
 
 # Create your views here.
@@ -186,27 +187,27 @@ def EditProfile(request):
         return HttpResponse(json.dumps({"status":"Profile Updated"}))
     
     
-@csrf_exempt
-def user_chat_view(request):
-    if request.method=='POST':
-        recieved_data = json.loads(request.body)
-        serializer_check = MessagesSerializer(data=recieved_data)
-        print(serializer_check)
-        if serializer_check.is_valid():
-            serializer_check.save()
-            return HttpResponse(json.dumps({"status":"Added"}))
-        else:
-            return HttpResponse(json.dumps({"status":"Failed"}))
+# @csrf_exempt
+# def user_chat_view(request):
+#     if request.method=='POST':
+#         recieved_data = json.loads(request.body)
+#         serializer_check = MessagesSerializer(data=recieved_data)
+#         print(serializer_check)
+#         if serializer_check.is_valid():
+#             serializer_check.save()
+#             return HttpResponse(json.dumps({"status":"Added"}))
+#         else:
+#             return HttpResponse(json.dumps({"status":"Failed"}))
         
-@csrf_exempt
-def view_user_chat_view(request):
-    if request.method=='POST':
-        recieved_data = json.loads(request.body)
-        getUserid = recieved_data["name"]
-        getRecieverid=recieved_data["reciever_name"]
-        data = MessageModel.objects.filter(Q(name__exact=getUserid)&Q(reciever_name__exact=getRecieverid)).all()
-        serializer_data = MessagesSerializer(data, many = True)
-        return HttpResponse(json.dumps(serializer_data.data))
+# @csrf_exempt
+# def view_user_chat_view(request):
+#     if request.method=='POST':
+#         recieved_data = json.loads(request.body)
+#         getUserid = recieved_data["name"]
+#         getRecieverid=recieved_data["reciever_name"]
+#         data = MessageModel.objects.filter(Q(name__exact=getUserid)&Q(reciever_name__exact=getRecieverid)).all()
+#         serializer_data = MessagesSerializer(data, many = True)
+#         return HttpResponse(json.dumps(serializer_data.data))
     
     
 
@@ -275,3 +276,84 @@ def deleteView(request):
 #         })
         
 #         return Response([])
+
+
+
+@csrf_exempt
+@api_view(['POST'])
+def send_message(request):
+    try:
+        sender_id = request.data.get('sender')
+        receiver_id = request.data.get('receiver')
+        job_id=request.data.get('job_id')
+
+        print(f"Sender ID: {sender_id}, Receiver ID: {receiver_id} , Job ID: {job_id}")
+
+        data = {
+            'sender': sender_id,
+            'receiver': receiver_id,
+            'text': request.data.get('text'),
+            'job_id':job_id
+            # Include any other fields from your serializer
+        }
+
+        # If a file is included in the request, save it to the 'file' field
+        file = request.data.get('file')
+        if file:
+            data['file'] = file
+
+        serializer = ChatSerializer(data=data)
+
+        if serializer.is_valid():
+            serializer.save()
+            return JsonResponse(serializer.data, status=201)
+
+        print(f"Serializer Errors: {serializer.errors}")
+        return JsonResponse(serializer.errors, status=400)
+
+    except Exception as e:
+        import traceback
+        traceback.print_exc()
+        return JsonResponse({"error": str(e)}, status=500)
+    
+
+# @require_GET
+@csrf_exempt
+def get_user_messages(request, user_id, job_id, emp_id):
+    try:
+        # Fetch messages where user_id is the receiver
+        messages = Chat.objects.filter(receiver=emp_id, job_id=job_id, sender=user_id).order_by('timestamp')
+        serializer = ChatSerializer(messages, many=True)
+        
+        # Serialize file URL to be included in the response
+        data = serializer.data
+        for message in data:
+            if message['file']:
+                message['file'] = request.build_absolute_uri(message['file'])
+
+        return JsonResponse(data, safe=False)
+    except Exception as e:
+        import traceback
+        traceback.print_exc()
+        return JsonResponse({"error": str(e)}, status=500)
+
+
+# @require_GET
+@csrf_exempt
+def get_emp_messages(request, user_id, job_id, emp_id):
+    try:
+        # Fetch messages where user_id is the receiver
+        messages = Chat.objects.filter(receiver=user_id, job_id=job_id, sender=emp_id).order_by('timestamp')
+        serializer = ChatSerializer(messages, many=True)
+        
+        # Serialize file URL to be included in the response
+        data = serializer.data
+        for message in data:
+            if message['file']:
+                message['file'] = request.build_absolute_uri(message['file'])
+
+        return JsonResponse(data, safe=False)
+    except Exception as e:
+        import traceback
+        traceback.print_exc()
+        return JsonResponse({"error": str(e)}, status=500)
