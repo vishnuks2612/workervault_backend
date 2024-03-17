@@ -187,27 +187,37 @@ def EditProfile(request):
         return HttpResponse(json.dumps({"status":"Profile Updated"}))
     
     
-# @csrf_exempt
-# def user_chat_view(request):
-#     if request.method=='POST':
-#         recieved_data = json.loads(request.body)
-#         serializer_check = MessagesSerializer(data=recieved_data)
-#         print(serializer_check)
-#         if serializer_check.is_valid():
-#             serializer_check.save()
-#             return HttpResponse(json.dumps({"status":"Added"}))
-#         else:
-#             return HttpResponse(json.dumps({"status":"Failed"}))
+@csrf_exempt
+def user_chat_view(request):
+    if request.method=='POST':
+        recieved_data = json.loads(request.body)
+        serializer_check = ChatSerializer(data=recieved_data)
+        print(serializer_check)
+        if serializer_check.is_valid():
+            serializer_check.save()
+            return HttpResponse(json.dumps({"status":"Added"}))
+        else:
+            return HttpResponse(json.dumps({"status":"Failed"}))
         
-# @csrf_exempt
-# def view_user_chat_view(request):
-#     if request.method=='POST':
-#         recieved_data = json.loads(request.body)
-#         getUserid = recieved_data["name"]
-#         getRecieverid=recieved_data["reciever_name"]
-#         data = MessageModel.objects.filter(Q(name__exact=getUserid)&Q(reciever_name__exact=getRecieverid)).all()
-#         serializer_data = MessagesSerializer(data, many = True)
-#         return HttpResponse(json.dumps(serializer_data.data))
+@csrf_exempt
+def view_user_chat_view(request):
+    if request.method=='POST':
+        recieved_data = json.loads(request.body)
+        getUserid = recieved_data["name"]
+        getRecieverid=recieved_data["reciever_name"]
+        data = Chat.objects.filter(Q(name__exact=getUserid)&Q(reciever_name__exact=getRecieverid)).all()
+        serializer_data = ChatSerializer(data, many = True)
+        return HttpResponse(json.dumps(serializer_data.data))
+    
+@csrf_exempt
+def get_employer_chat_view(request):
+    if request.method=='POST':
+        recieved_data = json.loads(request.body)
+        getUserid = recieved_data["name"]
+        getRecieverid=recieved_data["reciever_name"]
+        data = Chat.objects.filter(Q(name__exact=getUserid)&Q(reciever_name__exact=getRecieverid)).all()
+        serializer_data = ChatSerializer(data, many = True)
+        return HttpResponse(json.dumps(serializer_data.data))
     
     
 
