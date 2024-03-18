@@ -16,8 +16,8 @@ from rest_framework.decorators import api_view
 @csrf_exempt
 def registerView(request):
     if request.method=='POST':
-        recieved_data = json.loads(request.body)
-        serializer_check = WorkerVaultSerializer(data=recieved_data)
+        received_data = json.loads(request.body)
+        serializer_check = WorkerVaultSerializer(data=received_data)
         print(serializer_check)
         if serializer_check.is_valid():
             serializer_check.save()
@@ -31,9 +31,9 @@ def registerView(request):
 @csrf_exempt
 def loginView(request):
     if request.method=='POST':
-        recieved_data = json.loads(request.body)
-        getEmailId = recieved_data['emailid']
-        getPassword = recieved_data['password']
+        received_data = json.loads(request.body)
+        getEmailId = received_data['emailid']
+        getPassword = received_data['password']
         loginData = WorkerVaultModel.objects.filter(Q(emailid__exact = getEmailId) & Q(password__exact = getPassword)).values()
         loginData = list(loginData)
         return HttpResponse(json.dumps(loginData))
@@ -44,9 +44,9 @@ def loginView(request):
 @csrf_exempt
 def adminLogin(request):
     if request.method == 'POST':
-        recieved_data = json.loads(request.body)
-        getUsername = recieved_data['username']
-        getPass = recieved_data['password']
+        received_data = json.loads(request.body)
+        getUsername = received_data['username']
+        getPass = received_data['password']
         loginData = Admin.objects.filter(Q(username__exact = getUsername              ) & Q(password__exact = getPass)).values()
         loginData = list(loginData)
         return HttpResponse(json.dumps(loginData))
@@ -60,8 +60,8 @@ def adminLogin(request):
 @csrf_exempt
 def addnewsView(request):
     if request.method=='POST':
-        recieved_data = json.loads(request.body)
-        serializer_check = AddNewsSerializer(data=recieved_data)
+        received_data = json.loads(request.body)
+        serializer_check = AddNewsSerializer(data=received_data)
         print(serializer_check)
         if serializer_check.is_valid():
             serializer_check.save()
@@ -74,8 +74,8 @@ def addnewsView(request):
 @csrf_exempt
 def addservicesView(request):
     if request.method == 'POST':
-        recieved_data = json.loads(request.body)
-        serializer_check = AdminAddSerializer(data = recieved_data)
+        received_data = json.loads(request.body)
+        serializer_check = AdminAddSerializer(data = received_data)
         print(serializer_check)
         if serializer_check.is_valid():
             serializer_check.save()
@@ -88,9 +88,9 @@ def addservicesView(request):
 @csrf_exempt
 def contactUs(request):
     if request.method == 'POST':
-        recieved_data = json.loads(request.body)
-        print(recieved_data)
-        serializer_check = ContactUsSerializer(data = recieved_data)
+        received_data = json.loads(request.body)
+        print(received_data)
+        serializer_check = ContactUsSerializer(data = received_data)
         print(serializer_check)
         if serializer_check.is_valid():
             serializer_check.save()
@@ -143,8 +143,8 @@ def viewservicelistView(request):
 @csrf_exempt
 def findWorkers(request):
     if request.method == "POST":
-        recieved_data = json.loads(request.body)
-        getWorker = recieved_data["job"]
+        received_data = json.loads(request.body)
+        getWorker = received_data["job"]
         data = WorkerVaultModel.objects.filter(Q(job__icontains=getWorker)).all()
         serializer_data = WorkerVaultSerializer(data, many = True)
         return HttpResponse(json.dumps(serializer_data.data))
@@ -174,24 +174,25 @@ def view_profile_view(request):
 @csrf_exempt
 def EditProfile(request):
     if request.method == "PUT":
-        recieved_data = json.loads(request.body)
-        getUserid = recieved_data['userid']
-        getName = recieved_data['name']
-        getEmail = recieved_data['emailid']
-        getPhone = recieved_data['phoneno']
-        getJob = recieved_data['job']
-        getAddress = recieved_data['address']
-        getLocation = recieved_data['location']
+        received_data = json.loads(request.body)
+        getUserid = received_data['userid']
+        getName = received_data['name']
+        getEmail = received_data['emailid']
+        getPhone = received_data['phoneno']
+        getJob = received_data['job']
+        getAddress = received_data['address']
+        getLocation = received_data['location']
         data = WorkerVaultModel.objects.filter(Q(userid__exact = getUserid))
         data.update(name = getName, emailid = getEmail, phoneno = getPhone, job = getJob, address = getAddress, location = getLocation)
         return HttpResponse(json.dumps({"status":"Profile Updated"}))
     
     
 @csrf_exempt
-def user_chat_view(request):
+def submit_chat_view(request):
     if request.method=='POST':
-        recieved_data = json.loads(request.body)
-        serializer_check = ChatSerializer(data=recieved_data)
+        received_data = json.loads(request.body)
+        # print(received_data)
+        serializer_check = ChatSerializer(data=received_data)
         print(serializer_check)
         if serializer_check.is_valid():
             serializer_check.save()
@@ -200,32 +201,61 @@ def user_chat_view(request):
             return HttpResponse(json.dumps({"status":"Failed"}))
         
 @csrf_exempt
-def view_user_chat_view(request):
-    if request.method=='POST':
-        recieved_data = json.loads(request.body)
-        getUserid = recieved_data["name"]
-        getRecieverid=recieved_data["reciever_name"]
-        data = Chat.objects.filter(Q(name__exact=getUserid)&Q(reciever_name__exact=getRecieverid)).all()
-        serializer_data = ChatSerializer(data, many = True)
-        return HttpResponse(json.dumps(serializer_data.data))
+def get_chat_messages(request):
+    if request.method == 'POST':
+        received_data = json.loads(request.body)
+        sender_id = received_data.get("name", "")
+        receiver_id = received_data.get("receiver_name", "")
+        
+        # Fetch messages where the sender is the current user and the receiver is the specified recipient
+        sender_messages = Chat.objects.filter(Q(sender__exact=sender_id) & Q(receiver__exact=receiver_id))
+        
+        # Fetch messages where the sender is the specified recipient and the receiver is the current user
+        receiver_messages = Chat.objects.filter(Q(sender__exact=receiver_id) & Q(receiver__exact=sender_id))
+        
+        # Combine both sets of messages
+        all_messages = list(sender_messages) + list(receiver_messages)
+        
+        # Sort the combined messages based on the timestamp in descending order
+        sorted_messages = sorted(all_messages, key=lambda x: x.timestamp, reverse=False)
+        
+        # Serialize the sorted messages
+        sorted_messages_data = ChatSerializer(sorted_messages, many=True).data
+        
+        return JsonResponse(sorted_messages_data, safe=False)
+
     
 @csrf_exempt
-def get_employer_chat_view(request):
-    if request.method=='POST':
-        recieved_data = json.loads(request.body)
-        getUserid = recieved_data["name"]
-        getRecieverid=recieved_data["reciever_name"]
-        data = Chat.objects.filter(Q(name__exact=getUserid)&Q(reciever_name__exact=getRecieverid)).all()
-        serializer_data = ChatSerializer(data, many = True)
-        return HttpResponse(json.dumps(serializer_data.data))
+def get_employer_details_view(request):
+    if request.method == 'POST':
+        received_data = json.loads(request.body)
+        get_receiver_name = received_data.get("receiver_name", "")
+        
+        # Filter Chat objects to get distinct sender names and IDs
+        data = Chat.objects.filter(receiver__exact=get_receiver_name).values("sender__name", "sender__userid").distinct()
+        
+        # Extract sender names and IDs
+        unique_senders = [{"userid": item["sender__userid"], "name": item["sender__name"]} for item in data]
+        
+        return JsonResponse(unique_senders, safe=False)
+    
+# @csrf_exempt
+# def get_employer_chat_view(request):
+#     if request.method=='POST':
+#         received_data = json.loads(request.body)
+#         get_receiver_id=received_data["name"]
+#         get_sender_id=received_data["receiver_name"]
+#         data = Chat.objects.filter(Q(sender__exact=get_sender_id)&Q(receiver__exact=get_receiver_id)).all()
+#         serializer_data = ChatSerializer(data, many = True)
+#         return HttpResponse(json.dumps(serializer_data.data))
     
     
 
 @csrf_exempt
 def feedback(request):
     if request.method=='POST':
-        recieved_data = json.loads(request.body)
-        serializer_check = FeedbackSerializer(data=recieved_data)
+        received_data = json.loads(request.body)
+        serializer_check = FeedbackSerializer(data=received_data)
         print(serializer_check)
         if serializer_check.is_valid():
             serializer_check.save()
@@ -238,8 +268,8 @@ def feedback(request):
 @csrf_exempt
 def viewFeedback(request):
     if request.method == 'POST':
-        recieved_data = json.loads(request.body)
-        getRecieverid=recieved_data["reciever_name"]
+        received_data = json.loads(request.body)
+        getRecieverid=received_data["reciever_name"]
         data = FeedbackModel.objects.filter(Q(reciever_name__exact=getRecieverid)).all()
         serialize_data = FeedbackSerializer(data, many = True)
         print(serialize_data)
@@ -268,9 +298,9 @@ def deleteView(request):
 # @csrf_exempt
 # def recieved_chat_view(request):
 #     if request.method=='POST':
-#         recieved_data = json.loads(request.body)
-#         getRecieverid=recieved_data["reciever_name"]
-#         get_sender_id=recieved_data["name"]
+#         received_data = json.loads(request.body)
+#         getRecieverid=received_data["reciever_name"]
+#         get_sender_id=received_data["name"]
 #         data = MessageModel.objects.filter(Q(reciever_name__exact=getRecieverid)&Q(name__exact=get_sender_id)).all()
 #         serializer_data = MessagesSerializer(data, many = True)
 #         return HttpResponse(json.dumps(serializer_data.data))

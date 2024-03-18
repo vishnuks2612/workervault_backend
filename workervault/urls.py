@@ -24,9 +24,11 @@ urlpatterns = [
     
     
     
-    path('send_message/', views.send_message, name="send_message"),
-    path('get_user_messages/', views.get_user_messages, name="get_user_messages"),
-    path('get_emp_messages/', views.get_emp_messages, name="get_emp_messages"),
+    path('send_message/', views.submit_chat_view, name="send_message"),
+    # path('get_user_messages/', views.get_user_chat_view, name="get_user_messages"),
+    path('get_employer_details/', views.get_employer_details_view, name="get_user_messages"),
+    # path('get_emp_messages/', views.get_employer_chat_view, name="get_emp_messages"),
+    path('get_full_chat/', views.get_chat_messages, name="get_full_chat"),
     
     
     

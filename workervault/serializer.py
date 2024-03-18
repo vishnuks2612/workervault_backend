@@ -50,7 +50,7 @@ class ContactUsSerializer(serializers.ModelSerializer):
         fields = '__all__'
         
 class ChatSerializer(serializers.ModelSerializer):
-    user = WorkerVaultSerializer(source='name', read_only=True)
+    user = WorkerVaultSerializer(source='sender', read_only=True)
     class Meta:
         model = Chat
         fields = '__all__'

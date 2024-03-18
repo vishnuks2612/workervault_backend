@@ -40,11 +40,10 @@ class ContactUs(models.Model):
     
     
 class Chat(models.Model):
-    sender = models.IntegerField()
-    receiver = models.IntegerField()
-    job_id=models.IntegerField()
-    text = models.TextField()
-    file = models.FileField(upload_to='chat_files/', null=True, blank=True)
+    chat_id=models.AutoField(primary_key=True)
+    sender = models.ForeignKey(WorkerVaultModel, on_delete = models.CASCADE, related_name = 'sender' )
+    receiver = models.ForeignKey(WorkerVaultModel, on_delete = models.CASCADE, related_name = 'receiver')
+    text = models.CharField(max_length=300, default="")
     timestamp = models.DateTimeField(auto_now_add=True)
 
 class Admin(models.Model):
